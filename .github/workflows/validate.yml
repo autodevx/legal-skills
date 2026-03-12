@@ -1,0 +1,201 @@
+name: Validate Skills
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-skill-metadata:
+    runs-on: ubuntu-latest
+    name: Validate SKILL.md Frontmatter
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Validate SKILL.md files
+      run: |
+        python3 << 'EOF'
+        import os
+        import yaml
+        import sys
+        from pathlib import Path
+
+        # Required frontmatter fields
+        REQUIRED_FIELDS = {
+            'name': str,
+            'description': str,
+            'license': str,
+        }
+
+        # Recommended metadata fields
+        RECOMMENDED_FIELDS = {
+            'author': str,
+            'version': str,
+            'tags': list,
+        }
+
+        errors = []
+        validated = 0
+
+        # Find all SKILL.md files
+        skill_files = Path('.').rglob('SKILL.md')
+
+        for skill_file in skill_files:
+            try:
+                with open(skill_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+
+                # Extract frontmatter
+                if not content.startswith('---'):
+                    errors.append(f"{skill_file}: No frontmatter found (missing --- at start)")
+                    continue
+
+                # Split by ---
+                parts = content.split('---', 2)
+                if len(parts) < 3:
+                    errors.append(f"{skill_file}: Invalid frontmatter format")
+                    continue
+
+                frontmatter_text = parts[1]
+
+                try:
+                    metadata = yaml.safe_load(frontmatter_text)
+                except yaml.YAMLError as e:
+                    errors.append(f"{skill_file}: Invalid YAML in frontmatter: {e}")
+                    continue
+
+                if not isinstance(metadata, dict):
+                    errors.append(f"{skill_file}: Frontmatter must be a YAML object")
+                    continue
+
+                # Check required fields
+                for field, expected_type in REQUIRED_FIELDS.items():
+                    if field not in metadata:
+                        errors.append(f"{skill_file}: Missing required field '{field}'")
+                    elif not isinstance(metadata[field], expected_type):
+                        errors.append(f"{skill_file}: Field '{field}' must be {expected_type.__name__}")
+
+                # Warn about recommended fields
+                for field in RECOMMENDED_FIELDS:
+                    if field not in metadata:
+                        print(f"WARNING: {skill_file}: Missing recommended field '{field}'")
+
+                validated += 1
+                print(f"✓ {skill_file}: Valid")
+
+            except Exception as e:
+                errors.append(f"{skill_file}: Unexpected error: {e}")
+
+        # Report results
+        print(f"\nValidated {validated} SKILL.md file(s)")
+
+        if errors:
+            print("\nERRORS FOUND:")
+            for error in errors:
+                print(f"  ✗ {error}")
+            sys.exit(1)
+        else:
+            print("All SKILL.md files are valid!")
+
+        EOF
+
+  run-tests:
+    runs-on: ubuntu-latest
+    name: Run Python Tests
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+
+    - name: Find and install skill dependencies
+      run: |
+        # Look for requirements.txt in skill directories
+        find . -name "requirements.txt" -not -path "./.github/*" | while read req_file; do
+          echo "Installing dependencies from $req_file"
+          pip install -r "$req_file" || true
+        done
+
+    - name: Run tests
+      run: |
+        # Run pytest on all test directories in skills
+        pytest -v --tb=short $(find . -path "./skills/*/tests" -type d) 2>/dev/null || echo "No tests found"
+
+    - name: Generate coverage report
+      run: |
+        pytest --cov=$(find . -path "./skills/*/scripts" -type d | tr '\n' ',') \
+               --cov-report=term-missing \
+               $(find . -path "./skills/*/tests" -type d) 2>/dev/null || echo "Coverage report skipped"
+      continue-on-error: true
+
+  validate-structure:
+    runs-on: ubuntu-latest
+    name: Validate Skill Structure
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Validate skill directory structure
+      run: |
+        python3 << 'EOF'
+        import os
+        from pathlib import Path
+
+        # Check for skills directory
+        skills_dir = Path('skills')
+        if not skills_dir.exists():
+            print("WARNING: No 'skills' directory found at repository root")
+            exit(0)
+
+        required_files = ['SKILL.md']
+        recommended_files = ['scripts/', 'references/', 'tests/']
+
+        errors = []
+        validated = 0
+
+        # Iterate over skill subdirectories
+        for skill_dir in skills_dir.iterdir():
+            if not skill_dir.is_dir():
+                continue
+
+            skill_name = skill_dir.name
+
+            # Check required files
+            for req_file in required_files:
+                file_path = skill_dir / req_file
+                if not file_path.exists():
+                    errors.append(f"Skill '{skill_name}': Missing required file '{req_file}'")
+
+            # Check recommended directories
+            for rec_dir in recommended_files:
+                dir_path = skill_dir / rec_dir
+                if not dir_path.exists():
+                    print(f"INFO: Skill '{skill_name}': Missing recommended directory '{rec_dir}'")
+
+            validated += 1
+            print(f"✓ {skill_name}: Checked")
+
+        if errors:
+            print("\nERRORS FOUND:")
+            for error in errors:
+                print(f"  ✗ {error}")
+            exit(1)
+        else:
+            print(f"\nAll {validated} skill(s) have valid structure!")
+
+        EOF

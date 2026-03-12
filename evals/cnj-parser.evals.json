@@ -1,0 +1,162 @@
+{
+  "skill": "cnj-parser",
+  "version": "1.0.0",
+  "description": "Evaluation suite for CNJ process number parser",
+  "evals": [
+    {
+      "id": "cnj-01",
+      "input": "Parse this CNJ number: 0000001-95.2016.8.26.0100",
+      "expected_output": {
+        "contains": [
+          "sequential",
+          "year",
+          "segment",
+          "tribunal",
+          "origin",
+          "valid"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "tjsp", "formatted"]
+    },
+    {
+      "id": "cnj-02",
+      "input": "Validate: 0000002-53.2020.8.13.0001",
+      "expected_output": {
+        "contains": [
+          "tribunal",
+          "TJMG",
+          "valid"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "tjmg", "formatted"]
+    },
+    {
+      "id": "cnj-03",
+      "input": "Check this number: 0000003-89.2019.5.15.0001",
+      "expected_output": {
+        "contains": [
+          "TRT",
+          "labor",
+          "valid"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "trt", "labor", "formatted"]
+    },
+    {
+      "id": "cnj-04",
+      "input": "Parse CNJ: 0000004-12.2021.8.10.0001",
+      "expected_output": {
+        "contains": [
+          "TRF",
+          "federal",
+          "valid"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "trf", "federal", "formatted"]
+    },
+    {
+      "id": "cnj-05",
+      "input": "Validate STJ process: 0000005-67.2022.8.26.0100",
+      "expected_output": {
+        "contains": [
+          "STJ",
+          "superior",
+          "valid"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "stj", "superior", "formatted"]
+    },
+    {
+      "id": "cnj-06",
+      "input": "Check this invalid number: 9999999-99.9999.9.99.9999",
+      "expected_output": {
+        "contains": [
+          "invalid",
+          "check digit"
+        ],
+        "valid": false
+      },
+      "tags": ["invalid", "wrong-digits", "formatted"]
+    },
+    {
+      "id": "cnj-07",
+      "input": "Parse unformatted: 0000001952016826260100",
+      "expected_output": {
+        "contains": [
+          "sequential",
+          "year",
+          "valid"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "tjsp", "unformatted", "no-mask"]
+    },
+    {
+      "id": "cnj-08",
+      "input": "Validate with extra characters: 0000001-95.2016.8.26.0100 extra",
+      "expected_output": {
+        "contains": [
+          "extra characters",
+          "invalid"
+        ],
+        "valid": false
+      },
+      "tags": ["invalid", "extra-chars", "edge-case"]
+    },
+    {
+      "id": "cnj-09",
+      "input": "Empty string: ",
+      "expected_output": {
+        "contains": [
+          "empty",
+          "invalid"
+        ],
+        "valid": false
+      },
+      "tags": ["invalid", "empty", "edge-case"]
+    },
+    {
+      "id": "cnj-10",
+      "input": "Parse partial number: 0000001-95.2016",
+      "expected_output": {
+        "contains": [
+          "incomplete",
+          "invalid",
+          "20 digits"
+        ],
+        "valid": false
+      },
+      "tags": ["invalid", "incomplete", "edge-case"]
+    },
+    {
+      "id": "cnj-11",
+      "input": "Validate TJRJ: 0000006-34.2018.8.19.0001",
+      "expected_output": {
+        "contains": [
+          "TJRJ",
+          "Rio de Janeiro",
+          "valid"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "tjrj", "formatted"]
+    },
+    {
+      "id": "cnj-12",
+      "input": "Check with wrong format: 0000001.95-2016.8.26.0100",
+      "expected_output": {
+        "contains": [
+          "invalid format",
+          "invalid"
+        ],
+        "valid": false
+      },
+      "tags": ["invalid", "wrong-format", "edge-case"]
+    }
+  ]
+}

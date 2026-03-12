@@ -1,0 +1,149 @@
+{
+  "skill": "contrato-review",
+  "version": "1.0.0",
+  "description": "Evaluation suite for contract review and analysis",
+  "evals": [
+    {
+      "id": "contrato-01",
+      "input": "Review this NDA: It contains clause 'The receiving party agrees to not disclose any confidential information for a period of 5 years after termination.'",
+      "expected_output": {
+        "contains": [
+          "NDA",
+          "confidentiality",
+          "non-disclosure",
+          "5 years"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "nda", "confidentiality"]
+    },
+    {
+      "id": "contrato-02",
+      "input": "Analyze services contract: 'The contractor shall provide consulting services. All intellectual property rights are retained by the contractor.'",
+      "expected_output": {
+        "contains": [
+          "services",
+          "intellectual property",
+          "contractor",
+          "valid"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "services", "ip-rights"]
+    },
+    {
+      "id": "contrato-03",
+      "input": "Check employment contract: 'The employee may be terminated at will by the employer without cause and without notice.'",
+      "expected_output": {
+        "contains": [
+          "employment",
+          "abusive",
+          "at-will",
+          "no notice"
+        ],
+        "valid": false
+      },
+      "tags": ["invalid", "employment", "abusive-clause", "brazil-law"]
+    },
+    {
+      "id": "contrato-04",
+      "input": "Review LGPD compliance: 'Personal data will be collected and stored without any data protection measures. Users have no right to access or delete their data.'",
+      "expected_output": {
+        "contains": [
+          "LGPD",
+          "non-compliant",
+          "no protection",
+          "privacy violation"
+        ],
+        "valid": false
+      },
+      "tags": ["invalid", "lgpd", "non-compliant", "privacy"]
+    },
+    {
+      "id": "contrato-05",
+      "input": "Analyze service agreement with LGPD: 'We comply with LGPD. Users may request access to their data within 15 days. Data is encrypted and retention is limited to 2 years.'",
+      "expected_output": {
+        "contains": [
+          "LGPD",
+          "compliant",
+          "encryption",
+          "data access",
+          "retention policy"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "lgpd", "compliant", "data-protection"]
+    },
+    {
+      "id": "contrato-06",
+      "input": "Review contract with abusive clauses: 'Client waives all rights to legal action. Client assumes all liability. Client is prohibited from discussing contract terms with lawyers.'",
+      "expected_output": {
+        "contains": [
+          "abusive",
+          "waiver of rights",
+          "prohibited attorney",
+          "excessive liability"
+        ],
+        "valid": false
+      },
+      "tags": ["invalid", "abusive", "multiple-issues", "unenforceable"]
+    },
+    {
+      "id": "contrato-07",
+      "input": "Check payment terms: 'Payment shall be made in 30 days from invoice date. Interest on late payment is 2% per month or 24% per year. Late payment fees of R$ 1,000 apply.'",
+      "expected_output": {
+        "contains": [
+          "payment terms",
+          "30 days",
+          "interest rate",
+          "late payment",
+          "analysis"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "payment", "financial-terms"]
+    },
+    {
+      "id": "contrato-08",
+      "input": "Review termination clause: 'Either party may terminate this agreement with 60 days written notice. Upon termination, all obligations cease and confidentiality survives for 2 years.'",
+      "expected_output": {
+        "contains": [
+          "termination",
+          "notice period",
+          "obligations cease",
+          "confidentiality",
+          "survival clause"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "termination", "notice-period"]
+    },
+    {
+      "id": "contrato-09",
+      "input": "Empty contract document provided for review.",
+      "expected_output": {
+        "contains": [
+          "no content",
+          "invalid",
+          "incomplete"
+        ],
+        "valid": false
+      },
+      "tags": ["invalid", "empty", "edge-case"]
+    },
+    {
+      "id": "contrato-10",
+      "input": "Review liability clause: 'Each party's liability is limited to the amount paid under this agreement. Neither party is liable for indirect, incidental, or consequential damages.'",
+      "expected_output": {
+        "contains": [
+          "liability",
+          "limitation",
+          "cap on damages",
+          "excludes consequential"
+        ],
+        "valid": true
+      },
+      "tags": ["valid", "liability", "limitation-of-liability"]
+    }
+  ]
+}
