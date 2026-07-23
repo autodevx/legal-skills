@@ -35,9 +35,9 @@ NNNNNNN-DD.AAAA.J.TT.OOOO
 ## Comportamento esperado
 
 ### Input aceito
-- Número com máscara: `0002150-34.2023.8.13.0024`
-- Número sem máscara: `00021503420238130024`
-- Número com espaços ou caracteres extras: `0002150-34.2023.8.13.0024 (TJMG)`
+- Número com máscara: `0002150-46.2023.8.13.0024`
+- Número sem máscara: `00021504620238130024`
+- Número com espaços ou caracteres extras: `0002150-46.2023.8.13.0024 (TJMG)`
 - Lote de números (lista, planilha, texto livre com múltiplos processos)
 
 ### Passos de processamento
@@ -88,9 +88,9 @@ valido = (dv_calculado == int(dd))
 
 ```json
 {
-  "input_original": "0002150-34.2023.8.13.0024",
+  "input_original": "0002150-46.2023.8.13.0024",
   "valido": true,
-  "numero_formatado": "0002150-34.2023.8.13.0024",
+  "numero_formatado": "0002150-46.2023.8.13.0024",
   "componentes": {
     "sequencial": "0002150",
     "digito_verificador": "34",

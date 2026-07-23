@@ -257,6 +257,27 @@ class TestBatchProcessing:
         assert valid_count >= 1
         assert invalid_count >= 1
 
+    def test_extract_number_with_internal_space(self):
+        """Número quebrado por espaço interno (comum em PDF) ainda é extraído."""
+        text = "Autos 0002150-46.2023.8.13.00 24 conclusos"
+        numbers = extract_cnj_numbers(text)
+        assert len(numbers) == 1
+        assert "".join(c for c in numbers[0] if c.isdigit()) == "00021504620238130024"
+
+    def test_extract_number_with_line_break(self):
+        """Número quebrado por nova linha (wrap de publicação) ainda é extraído."""
+        text = "Processo 0002150-46.2023.8.13.\n0024 distribuído"
+        numbers = extract_cnj_numbers(text)
+        assert len(numbers) == 1
+        assert "".join(c for c in numbers[0] if c.isdigit()) == "00021504620238130024"
+
+    def test_extract_two_glued_numbers(self):
+        """Dois números colados sem separador são segmentados em dois."""
+        bare = "00021504620238130024"
+        numbers = extract_cnj_numbers(bare + bare)
+        assert len(numbers) == 2
+        assert all("".join(c for c in n if c.isdigit()) == bare for n in numbers)
+
 
 class TestEdgeCases:
     """Test edge cases and boundary conditions."""

@@ -42,7 +42,7 @@ git clone https://github.com/autodevx/legal-skills.git
 
 3. Use linguagem natural:
 ```
-"valida esse número CNJ: 0002150-34.2023.8.13.0024"
+"valida esse número CNJ: 0002150-46.2023.8.13.0024"
 "analisa esse contrato e aponta cláusulas abusivas"
 "gera relatório de contingência para esses 15 processos"
 "classifica essas publicações de audiência"
@@ -62,7 +62,7 @@ skills install autodevx/legal-skills
 
 ```bash
 # CNJ Parser (Python, sem dependências externas)
-python skills/cnj-parser/scripts/cnj_validator.py "0002150-34.2023.8.13.0024"
+python skills/cnj-parser/scripts/cnj_validator.py "0002150-46.2023.8.13.0024"
 
 # Batch processing
 cat processos.txt | python skills/cnj-parser/scripts/cnj_validator.py --batch --format csv

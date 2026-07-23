@@ -86,7 +86,7 @@ Além da classificação, extrair quando disponíveis:
     "vara": "2ª Vara Cível",
     "comarca": "Belo Horizonte/MG",
     "juiz": null,
-    "processo": "0002150-34.2023.8.13.0024",
+    "processo": "0002150-46.2023.8.13.0024",
     "partes": "João da Silva vs. Empresa XYZ Ltda",
     "plataforma_virtual": "Microsoft Teams",
     "link_acesso": "https://teams.microsoft.com/..."

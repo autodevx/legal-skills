@@ -36,9 +36,11 @@ Analisar os dados fornecidos sobre um processo judicial e produzir:
 
 ## Critérios CPC 25
 
-- **Provável (provisionar):** probabilidade de saída de recursos > 50%. Reconhecer no balanço.
-- **Possível (divulgar em nota):** probabilidade entre 5% e 50%. Divulgar sem provisionar.
-- **Remoto (não divulgar):** probabilidade < 5%. Não reconhecer nem divulgar.
+As faixas percentuais abaixo são convenção da prática contábil, não texto expresso da norma: o CPC 25 e a IAS 37 fixam apenas "provável" como mais provável que não (acima de 50%). Use a mesma escala do relatório de contingência (skill contingencia-report) para as duas análises não divergirem no mesmo processo.
+
+- **Provável (provisionar):** acima de 50% pela IAS 37; a prática brasileira costuma exigir acima de 70% para provisão integral. Reconhecer no balanço.
+- **Possível (divulgar em nota):** entre 20% e 50% (IAS 37) ou 30% a 70% (prática BR). Divulgar sem provisionar.
+- **Remoto (não divulgar):** abaixo de 20% (IAS 37) ou abaixo de 30% (prática BR). Não reconhecer nem divulgar.
 
 ## Dados de entrada
 

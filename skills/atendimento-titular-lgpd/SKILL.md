@@ -39,7 +39,7 @@ Você é um especialista em proteção de dados pessoais e atendimento ao titula
 | Revogação de consentimento | Retirar consentimento dado anteriormente |
 | Oposição | Contestar tratamento que não respeita a lei |
 
-**Prazo legal:** 15 dias para resposta (Art. 18, §5º LGPD).
+**Prazo legal:** para a confirmação de existência e o acesso aos dados, 15 dias corridos contados do requerimento (Art. 19, §1º, II, da LGPD). Os demais direitos do Art. 18 (correção, eliminação, portabilidade, oposição) não têm prazo único fixado em lei; a orientação da ANPD é atendê-los em prazo razoável, e a prática adota os mesmos 15 dias por analogia.
 
 ## Dados de entrada
 

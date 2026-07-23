@@ -140,9 +140,9 @@ def parse_cnj_number(input_str: str) -> Dict:
     Parses and validates a single CNJ case number.
 
     Accepts formats:
-    - With mask: 0002150-34.2023.8.13.0024
-    - Without mask: 00021503420238130024
-    - With extra chars: 0002150-34.2023.8.13.0024 (TJMG)
+    - With mask: 0002150-46.2023.8.13.0024
+    - Without mask: 00021504620238130024
+    - With extra chars: 0002150-46.2023.8.13.0024 (TJMG)
 
     Args:
         input_str: Raw input string potentially containing a CNJ number
@@ -213,29 +213,31 @@ def parse_cnj_number(input_str: str) -> Dict:
     }
 
 
+# Estrutura do CNJ: 20 dígitos. Toleramos separadores e quebras ENTRE os dígitos
+# (espaço, ponto, hífen, nova linha) porque publicações e PDFs colam o número com
+# espaço ou quebra de linha no meio. Cada casamento tem EXATAMENTE 20 dígitos, então
+# números adjacentes ou colados são segmentados corretamente. O dígito verificador
+# (validado adiante) é o filtro real de validade.
+_CNJ_RE = re.compile(r"\d(?:[\s.\-]{0,10}\d){19}")
+
+
 def extract_cnj_numbers(text: str) -> List[str]:
     """
     Extracts potential CNJ numbers from text.
 
-    Looks for sequences of exactly 20 digits (with or without mask).
+    Matches runs of exactly 20 digits, tolerating separators and breaks between
+    digits (whitespace, dot, hyphen, newline). This keeps numbers that copy/paste
+    from publications and PDFs split with an internal space or a line wrap, and
+    segments adjacent/glued numbers correctly. Check-digit validation downstream
+    is the real validity gate.
 
     Args:
         text: Input text potentially containing one or more CNJ numbers
 
     Returns:
-        List of potential CNJ number strings
+        List of potential CNJ number substrings (each normalizes to 20 digits)
     """
-    # Pattern: 20 digits with optional separators
-    pattern = r"\b[\d\-\.]+\b"
-    candidates = re.findall(pattern, text)
-
-    cnj_candidates = []
-    for candidate in candidates:
-        digits = re.sub(r"\D", "", candidate)
-        if len(digits) == 20:
-            cnj_candidates.append(candidate)
-
-    return cnj_candidates
+    return [m.group(0) for m in _CNJ_RE.finditer(text)]
 
 
 def process_batch(input_source: Optional[str]) -> List[Dict]:
@@ -387,7 +389,7 @@ def main() -> None:
 Exemplos:
 
   # Validar um número direto na linha de comando
-  %(prog)s "0002150-34.2023.8.13.0024"
+  %(prog)s "0002150-46.2023.8.13.0024"
 
   # Processar múltiplos números de um arquivo
   %(prog)s --batch processos.txt --format table
@@ -396,7 +398,7 @@ Exemplos:
   cat processos.txt | %(prog)s --batch --format json
 
   # Validar número sem máscara
-  %(prog)s "00021503420238130024"
+  %(prog)s "00021504620238130024"
         """,
     )
 
