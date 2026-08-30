@@ -29,39 +29,39 @@ class TestCheckDigitValidation:
 
     def test_valid_tjsp_number(self):
         """Test valid TJSP (State of São Paulo) number."""
-        # 0002150-26.2023.8.26.0024 (TJSP) - correct check digit
-        assert validate_check_digits("0002150", "26", "2023", "8", "26", "0024")
+        # 0002150-76.2023.8.26.0024 (TJSP) - correct check digit
+        assert validate_check_digits("0002150", "76", "2023", "8", "26", "0024")
 
     def test_valid_tjmg_number(self):
         """Test valid TJMG (State of Minas Gerais) number."""
-        # 0002150-46.2023.8.13.0024 (TJMG) - correct check digit
-        assert validate_check_digits("0002150", "46", "2023", "8", "13", "0024")
+        # 0002150-39.2023.8.13.0024 (TJMG) - correct check digit
+        assert validate_check_digits("0002150", "39", "2023", "8", "13", "0024")
 
     def test_invalid_check_digit(self):
         """Test that incorrect check digit is rejected."""
         # Same number but wrong check digit (25 instead of 26)
-        assert not validate_check_digits("0002150", "25", "2023", "8", "26", "0024")
+        assert not validate_check_digits("0002150", "75", "2023", "8", "26", "0024")
 
     def test_invalid_check_digit_off_by_one(self):
         """Test off-by-one check digit error."""
-        assert not validate_check_digits("0002150", "27", "2023", "8", "26", "0024")
+        assert not validate_check_digits("0002150", "77", "2023", "8", "26", "0024")
 
     def test_different_year_requires_different_checksum(self):
         """Test that changing year invalidates same check digit."""
         # Valid with year 2023
-        assert validate_check_digits("0002150", "26", "2023", "8", "26", "0024")
+        assert validate_check_digits("0002150", "76", "2023", "8", "26", "0024")
         # Same check digit invalid with year 2024
         assert not validate_check_digits("0002150", "26", "2024", "8", "26", "0024")
 
     def test_labor_court_trt_number(self):
         """Test valid TRT (Labor Court) number."""
         # From TRT-2 (São Paulo) - verified check digit
-        assert validate_check_digits("1234567", "96", "2022", "5", "02", "1234")
+        assert validate_check_digits("1234567", "92", "2022", "5", "02", "1234")
 
     def test_federal_court_trf_number(self):
         """Test valid TRF (Federal Court) number."""
         # From TRF-1 (Federal Court First Region) - verified check digit
-        assert validate_check_digits("9876543", "63", "2021", "4", "01", "5678")
+        assert validate_check_digits("9876543", "90", "2021", "4", "01", "5678")
 
 
 class TestSingleNumberParsing:
@@ -69,10 +69,10 @@ class TestSingleNumberParsing:
 
     def test_valid_tjsp_with_mask(self):
         """Parse valid TJSP number with standard mask."""
-        result = parse_cnj_number("0002150-26.2023.8.26.0024")
+        result = parse_cnj_number("0002150-76.2023.8.26.0024")
 
         assert result["valido"] is True
-        assert result["numero_formatado"] == "0002150-26.2023.8.26.0024"
+        assert result["numero_formatado"] == "0002150-76.2023.8.26.0024"
         assert result["componentes"]["tribunal_sigla"] == "TJSP"
         assert result["componentes"]["ano"] == "2023"
         assert result["componentes"]["justica_nome"] == "Justiça dos Estados e DF"
@@ -80,31 +80,31 @@ class TestSingleNumberParsing:
 
     def test_valid_tjmg_with_mask(self):
         """Parse valid TJMG number with standard mask."""
-        result = parse_cnj_number("0002150-46.2023.8.13.0024")
+        result = parse_cnj_number("0002150-39.2023.8.13.0024")
 
         assert result["valido"] is True
-        assert result["numero_formatado"] == "0002150-46.2023.8.13.0024"
+        assert result["numero_formatado"] == "0002150-39.2023.8.13.0024"
         assert result["componentes"]["tribunal_sigla"] == "TJMG"
         assert result["componentes"]["justica_codigo"] == "8"
 
     def test_valid_number_without_mask(self):
         """Parse valid CNJ number without mask (20 digits only)."""
-        result = parse_cnj_number("00021502620238260024")
+        result = parse_cnj_number("00021507620238260024")
 
         assert result["valido"] is True
-        assert result["numero_formatado"] == "0002150-26.2023.8.26.0024"
+        assert result["numero_formatado"] == "0002150-76.2023.8.26.0024"
         assert result["componentes"]["tribunal_sigla"] == "TJSP"
 
     def test_valid_number_with_extra_whitespace(self):
         """Parse valid number with leading/trailing whitespace."""
-        result = parse_cnj_number("  0002150-26.2023.8.26.0024  ")
+        result = parse_cnj_number("  0002150-76.2023.8.26.0024  ")
 
         assert result["valido"] is True
         assert result["componentes"]["tribunal_sigla"] == "TJSP"
 
     def test_valid_number_with_extra_characters(self):
         """Parse valid number with extraneous text (parentheses, etc)."""
-        result = parse_cnj_number("0002150-26.2023.8.26.0024 (TJSP)")
+        result = parse_cnj_number("0002150-76.2023.8.26.0024 (TJSP)")
 
         assert result["valido"] is True
         assert result["componentes"]["tribunal_sigla"] == "TJSP"
@@ -151,7 +151,7 @@ class TestSingleNumberParsing:
 
     def test_trt_labor_court(self):
         """Test parsing TRT (Labor Court) number."""
-        result = parse_cnj_number("1234567-96.2022.5.02.1234")
+        result = parse_cnj_number("1234567-92.2022.5.02.1234")
 
         assert result["valido"] is True
         assert result["componentes"]["tribunal_sigla"] == "TRT-2"
@@ -159,7 +159,7 @@ class TestSingleNumberParsing:
 
     def test_trf_federal_court(self):
         """Test parsing TRF (Federal Court) number."""
-        result = parse_cnj_number("9876543-63.2021.4.01.5678")
+        result = parse_cnj_number("9876543-90.2021.4.01.5678")
 
         assert result["valido"] is True
         assert result["componentes"]["tribunal_sigla"] == "TRF-1"
@@ -244,7 +244,7 @@ class TestBatchProcessing:
         """Test batch processing with mix of valid and invalid numbers."""
         # Create a temporary test
         numbers_text = """
-        0002150-26.2023.8.26.0024
+        0002150-76.2023.8.26.0024
         0002150-25.2023.8.26.0024
         """
 
@@ -291,14 +291,14 @@ class TestEdgeCases:
 
     def test_special_characters_in_input(self):
         """Handle input with special characters mixed in."""
-        result = parse_cnj_number("0002150-26.2023.8.26.0024@#$")
+        result = parse_cnj_number("0002150-76.2023.8.26.0024@#$")
 
         assert result["valido"] is True
         assert result["componentes"]["tribunal_sigla"] == "TJSP"
 
     def test_alphabetic_characters_removed(self):
         """Verify alphabetic characters are stripped."""
-        result = parse_cnj_number("0002150-26a.2023b.8c.26d.0024")
+        result = parse_cnj_number("0002150-76a.2023b.8c.26d.0024")
 
         assert result["valido"] is True
 
@@ -363,3 +363,42 @@ class TestRealWorldExamples:
     def test_stj_superior_tribunal(self):
         """Test Superior Court of Justice number (Justice 3)."""
         result = parse_cnj_number("0000001-00.2023.3.00.0001")
+
+
+class TestRealWorldNumbers:
+    """Regression tests against real case numbers issued by the courts.
+
+    The previous implementation dropped the trailing "00" (the check-digit
+    placeholder) from step 3 of the modulo 97 algorithm. That shifted the
+    remainder and made every genuine CNJ number fail validation. These
+    numbers come from real TJMG filings, so they cannot be curve-fitted to
+    a buggy implementation the way synthetic fixtures can.
+    """
+
+    REAL_NUMBERS = [
+        "1000077-34.2026.8.13.0166",  # Carta precatória, Comarca de Cláudio/MG
+        "5084396-36.2025.8.13.0024",  # 5ª Vara de Família, Belo Horizonte/MG
+    ]
+
+    def test_real_numbers_are_accepted(self):
+        """Real court-issued numbers must validate."""
+        for numero in self.REAL_NUMBERS:
+            result = parse_cnj_number(numero)
+            assert result["valido"] is True, f"{numero} rejected but is valid"
+
+    def test_real_numbers_with_corrupted_check_digit_are_rejected(self):
+        """Flipping the check digit of a real number must invalidate it."""
+        for numero in self.REAL_NUMBERS:
+            dd = int(numero[8:10])
+            corrompido = numero[:8] + f"{(dd + 1) % 100:02d}" + numero[10:]
+            result = parse_cnj_number(corrompido)
+            assert result["valido"] is False, f"{corrompido} accepted but is invalid"
+
+    def test_check_digit_matches_official_formula(self):
+        """Cross-check against the formula stated in Resolution 65/2008."""
+        for numero in self.REAL_NUMBERS:
+            d = numero.replace("-", "").replace(".", "")
+            seq, dd, ano, j, tt, oooo = d[:7], d[7:9], d[9:13], d[13], d[14:16], d[16:20]
+            esperado = 98 - (int(seq + ano + j + tt + oooo + "00") % 97)
+            assert int(dd) == esperado
+            assert validate_check_digits(seq, dd, ano, j, tt, oooo)
