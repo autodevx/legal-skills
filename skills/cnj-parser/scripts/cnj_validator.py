@@ -127,7 +127,10 @@ def validate_check_digits(
         r2 = int(f"{r1:02d}{ano}{j}{tt}") % 97
 
         # Step 3: Calculate expected check digit
-        dv_calculated = 98 - (int(f"{r2:02d}{oooo}") % 97)
+        # The trailing "00" stands for the check-digit position itself, as
+        # required by Resolution 65/2008. Without it the modulo 97 result is
+        # shifted and every valid number is rejected.
+        dv_calculated = 98 - (int(f"{r2:02d}{oooo}00") % 97)
 
         # Compare with provided check digit
         return dv_calculated == int(dd)
